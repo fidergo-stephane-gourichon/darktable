@@ -71,6 +71,7 @@ typedef enum dt_iop_clipping_ratios_flags_t
   RATIO_5_4,
   RATIO_1_1,
   RATIO_DIN,
+  RATIO_8_9,
   RATIO_16_9,
   RATIO_16_10,
   RATIO_10_8,
@@ -1391,6 +1392,7 @@ static void aspect_presets_changed (GtkWidget *combo, dt_iop_module_t *self)
     if (which==RATIO_10_8) d=2445, n=2032;
     else if (which==RATIO_10_8) d=2445, n=2032;
     else if (which==RATIO_16_10) d=16, n=10;
+    else if (which==RATIO_8_9) d=8, n=9;
     else if (which==RATIO_16_9) d=16, n=9;
     else if (which==RATIO_1_1) d=1, n=1;
     else if (which==RATIO_1_2) d=1, n=2;
@@ -1534,6 +1536,7 @@ void gui_update(struct dt_iop_module_t *self)
   else if (d==7 && n==5) act=RATIO_7_5;
   else if (d==4 && n==3) act=RATIO_4_3;
   else if (d==5 && n==4) act=RATIO_5_4;
+  else if (d==8 && n==9) act=RATIO_8_9;
   else if (d==16 && n==9) act=RATIO_16_9;
   else if (d==16 && n==10) act=RATIO_16_10;
   else if (d==16180340 && n==10000000) act=RATIO_GOLDEN;
@@ -1756,6 +1759,7 @@ void gui_init(struct dt_iop_module_t *self)
   dt_bauhaus_combobox_add(g->aspect_presets, _("5:4"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("square"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("DIN"));
+  dt_bauhaus_combobox_add(g->aspect_presets, _("8:9"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("16:9"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("16:10"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("10:8 in print"));
