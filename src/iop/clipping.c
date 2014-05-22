@@ -74,6 +74,7 @@ typedef enum dt_iop_clipping_ratios_flags_t
   RATIO_4_9,
   RATIO_16_27,
   RATIO_8_9,
+  RATIO_32_27,
   RATIO_16_9,
   RATIO_16_10,
   RATIO_10_8,
@@ -1232,6 +1233,7 @@ static float _ratio_get_aspect(dt_iop_module_t *self)
       else if (fabsf(whratio-4.0f/9.0f)<prec) p->ratio_d=4, p->ratio_n=9;
       else if (fabsf(whratio-16.0f/27.0f)<prec) p->ratio_d=16, p->ratio_n=27;
       else if (fabsf(whratio-8.0f/9.0f)<prec) p->ratio_d=8, p->ratio_n=9;
+      else if (fabsf(whratio-32.0f/27.0f)<prec) p->ratio_d=32, p->ratio_n=27;
       else if (fabsf(whratio-16.0f/9.0f)<prec) p->ratio_d=16, p->ratio_n=9;
       else if (fabsf(whratio-16.0f/10.0f)<prec) p->ratio_d=16, p->ratio_n=10;
       else if (fabsf(whratio-244.5f/203.2f)<prec) p->ratio_d=2445, p->ratio_n=2032;
@@ -1400,6 +1402,7 @@ static void aspect_presets_changed (GtkWidget *combo, dt_iop_module_t *self)
     else if (which==RATIO_4_9) d=4, n=9;
     else if (which==RATIO_16_27) d=16, n=27;
     else if (which==RATIO_8_9) d=8, n=9;
+    else if (which==RATIO_32_27) d=32, n=27;
     else if (which==RATIO_16_9) d=16, n=9;
     else if (which==RATIO_1_1) d=1, n=1;
     else if (which==RATIO_1_2) d=1, n=2;
@@ -1546,6 +1549,7 @@ void gui_update(struct dt_iop_module_t *self)
   else if (d==4 && n==9) act=RATIO_4_9;
   else if (d==16 && n==27) act=RATIO_16_27;
   else if (d==8 && n==9) act=RATIO_8_9;
+  else if (d==32 && n==27) act=RATIO_32_27;
   else if (d==16 && n==9) act=RATIO_16_9;
   else if (d==16 && n==10) act=RATIO_16_10;
   else if (d==16180340 && n==10000000) act=RATIO_GOLDEN;
@@ -1771,6 +1775,7 @@ void gui_init(struct dt_iop_module_t *self)
   dt_bauhaus_combobox_add(g->aspect_presets, _("4:9"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("16:27"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("8:9"));
+  dt_bauhaus_combobox_add(g->aspect_presets, _("32:27"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("16:9"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("16:10"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("10:8 in print"));
