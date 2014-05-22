@@ -1229,6 +1229,9 @@ static float _ratio_get_aspect(dt_iop_module_t *self)
       else if (fabsf(whratio-4.0f/3.0f)<prec) p->ratio_d=4, p->ratio_n=3;
       else if (fabsf(whratio-5.0f/4.0f)<prec) p->ratio_d=5, p->ratio_n=4;
       else if (fabsf(whratio-1.0f/1.0f)<prec) p->ratio_d=1, p->ratio_n=1;
+      else if (fabsf(whratio-4.0f/9.0f)<prec) p->ratio_d=4, p->ratio_n=9;
+      else if (fabsf(whratio-16.0f/27.0f)<prec) p->ratio_d=16, p->ratio_n=27;
+      else if (fabsf(whratio-8.0f/9.0f)<prec) p->ratio_d=8, p->ratio_n=9;
       else if (fabsf(whratio-16.0f/9.0f)<prec) p->ratio_d=16, p->ratio_n=9;
       else if (fabsf(whratio-16.0f/10.0f)<prec) p->ratio_d=16, p->ratio_n=10;
       else if (fabsf(whratio-244.5f/203.2f)<prec) p->ratio_d=2445, p->ratio_n=2032;
@@ -1765,6 +1768,8 @@ void gui_init(struct dt_iop_module_t *self)
   dt_bauhaus_combobox_add(g->aspect_presets, _("5:4"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("square"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("DIN"));
+  dt_bauhaus_combobox_add(g->aspect_presets, _("4:9"));
+  dt_bauhaus_combobox_add(g->aspect_presets, _("16:27"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("8:9"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("16:9"));
   dt_bauhaus_combobox_add(g->aspect_presets, _("16:10"));
