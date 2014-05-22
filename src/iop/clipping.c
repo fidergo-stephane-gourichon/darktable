@@ -71,6 +71,8 @@ typedef enum dt_iop_clipping_ratios_flags_t
   RATIO_5_4,
   RATIO_1_1,
   RATIO_DIN,
+  RATIO_4_9,
+  RATIO_16_27,
   RATIO_8_9,
   RATIO_16_9,
   RATIO_16_10,
@@ -1392,6 +1394,8 @@ static void aspect_presets_changed (GtkWidget *combo, dt_iop_module_t *self)
     if (which==RATIO_10_8) d=2445, n=2032;
     else if (which==RATIO_10_8) d=2445, n=2032;
     else if (which==RATIO_16_10) d=16, n=10;
+    else if (which==RATIO_4_9) d=4, n=9;
+    else if (which==RATIO_16_27) d=16, n=27;
     else if (which==RATIO_8_9) d=8, n=9;
     else if (which==RATIO_16_9) d=16, n=9;
     else if (which==RATIO_1_1) d=1, n=1;
@@ -1536,6 +1540,8 @@ void gui_update(struct dt_iop_module_t *self)
   else if (d==7 && n==5) act=RATIO_7_5;
   else if (d==4 && n==3) act=RATIO_4_3;
   else if (d==5 && n==4) act=RATIO_5_4;
+  else if (d==4 && n==9) act=RATIO_4_9;
+  else if (d==16 && n==27) act=RATIO_16_27;
   else if (d==8 && n==9) act=RATIO_8_9;
   else if (d==16 && n==9) act=RATIO_16_9;
   else if (d==16 && n==10) act=RATIO_16_10;
