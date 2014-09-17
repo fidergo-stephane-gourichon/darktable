@@ -155,6 +155,15 @@ static void key_accel_changed(GtkAccelMap *object,
   dt_accel_path_view(path, sizeof(path), "lighttable", "preview with focus detection");
   gtk_accel_map_lookup_entry(path,
                              &darktable.control->accels.lighttable_preview_display_focus);
+  dt_accel_path_view(path, sizeof(path), "lighttable", "sticky preview");
+  gtk_accel_map_lookup_entry(path,
+                             &darktable.control->accels.lighttable_preview_sticky);
+  dt_accel_path_view(path, sizeof(path), "lighttable", "sticky preview with focus detection");
+  gtk_accel_map_lookup_entry(path,
+                             &darktable.control->accels.lighttable_preview_sticky_focus);
+  dt_accel_path_view(path, sizeof(path), "lighttable", "exit sticky preview");
+  gtk_accel_map_lookup_entry(path,
+                             &darktable.control->accels.lighttable_preview_sticky_exit);
 
 
   // Global
@@ -958,16 +967,11 @@ dt_gui_gtk_init(dt_gui_gtk_t *gui, int argc, char *argv[])
 
   // Full-screen accelerators
   dt_accel_register_global(NC_("accel", "toggle fullscreen"), GDK_KEY_F11, 0);
-  dt_accel_register_global(NC_("accel", "leave fullscreen"), GDK_KEY_Escape, 0);
 
   dt_accel_connect_global(
     "toggle fullscreen",
     g_cclosure_new(G_CALLBACK(fullscreen_key_accel_callback),
                    GINT_TO_POINTER(1), NULL));
-  dt_accel_connect_global(
-    "leave fullscreen",
-    g_cclosure_new(G_CALLBACK(fullscreen_key_accel_callback),
-                   GINT_TO_POINTER(0), NULL));
 
   // Side-border hide/show
   dt_accel_register_global(NC_("accel", "toggle side borders"), GDK_KEY_Tab, 0);
