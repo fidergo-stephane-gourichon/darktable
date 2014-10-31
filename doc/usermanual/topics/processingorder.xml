@@ -1,0 +1,151 @@
+<sect1 status="draft" id="darktable_and_processing_order">
+
+  <title>darktable and processing order</title>
+
+  <sect2>
+
+    <title>Introduction</title>
+
+  <indexterm>
+    <primary>module processing order</primary>
+  </indexterm>
+    
+    <para>
+      Users are sometimes puzzled by the various ways that the different
+      steps of image processing are displayed in the darkroom view:
+      <itemizedlist>
+	
+	<listitem><para>
+	  on the right, the module panel shows modules, in a fixed order
+	</para></listitem>
+	
+	<listitem><para>
+	  on the left, the history stack panel names modules in the order they were enabled or
+	  disabled
+	</para></listitem>
+	
+	<listitem><para> 
+	  on the left, the snapshots panel shows them with module names, in the order snapshots were
+	  created
+	</para></listitem>
+	
+      </itemizedlist>
+    </para>
+    
+    <para>
+      This does not make obvious in what order the various processing operations is done in darktable.
+    </para>
+    
+  </sect2>
+
+  <sect2>
+
+    <title>Actual processing order</title>
+    
+    <para>
+      Actually, darktable processed modules in a fixed order, the order which is seen in the module
+      panel, from bottom to top.
+    </para>
+
+    <para>
+      For example, when working on a raw file, the history stack on the left might say that you
+      first enabled <link linkend="denoise_bilateral"><emphasis>bilateral
+      filtering</emphasis></link>, then disabled <link linkend="base_curve"><emphasis>base
+      curve</emphasis></link>, then adjusted <link linkend="whitebalance"><emphasis>white
+      balance</emphasis></link>.  But at any time, the processing took the RAW image (not even
+      demosaiced), adjusted <link linkend="whitebalance"><emphasis>white balance</emphasis></link>
+      on it, then <link linkend="demosaic"><emphasis>demosaic</emphasis></link>, then <link
+      linkend="base_curve"><emphasis>base curve</emphasis></link> (if enabled), then bilateral
+      filtering (if enabled), as shown bottom to top on the right panel.
+    </para>
+
+  </sect2>
+
+  <sect2>
+
+    <title>Why this order</title>
+
+    <para>
+      This strict order may not be obvious at first. There are some reasons 
+      easy to summarize, and many others not easy.
+    </para>
+
+    <para>
+      First, one should know that there are many different ways to represent an image: components
+      (like RGB or Lab), but also other aspects of colorspace like linear or pre-applied gamma.
+    </para>
+
+    <para>
+      A linear colorspace is necessary for several things as simple as adjusting the exposure, while
+      pre-applied gamma is part of the sRGB standard and implicitly expected of any JPEG that comes
+      without colorspace information.
+    </para>
+
+    <para>
+      Some modules can only work on certain representations, and changing format comes with a cost.
+    </para>
+
+    <para>
+      Since quality image processing is computationally expensive, darktable authors had to make
+      some design choice to provide maximum flexibility in processing while minimizing the number of
+      image representation switches to maximize quality.
+    </para>
+
+    <para>
+      Examples of "easy" reasons:
+      <itemizedlist>
+
+	<listitem><para>
+	  Some modules don't operate on same data, so they couldn't be swapped.
+	</para></listitem>
+	
+	<listitem><para> 
+	  Some orders would make debatable sense, for example apply white balance after non-linear
+	  transformations like <link linkend="base_curve"><emphasis>base curve</emphasis></link> or
+	  <link linkend="tone_curve"> <emphasis>tone curve</emphasis></link>.  Or remove hot pixels
+	  after demosaicing.
+	</para></listitem>
+
+      </itemizedlist>
+    </para>
+    
+    <para>
+      The semantic of the data changes along the pipeline. Changing the order would break modules
+      in various way, from downright inapplicable to subtle inaccuracies that people may report as
+      bugs (raw processing assumed below for simplicity):
+      <itemizedlist>
+	
+	<listitem><para>
+	  Before <link linkend="demosaic"><emphasis>demosaic</emphasis></link>, image data is
+	  (generally) one-plane Bayer-encoded, while after that it's three-plane and linear.
+	</para></listitem>
+	
+	<listitem><para> 
+	  An outstanding example of order-dependent processing is <link
+	  linkend="denoise_profiled"><emphasis>profiled denoise</emphasis></link>.  It needs a
+	  three-plane representation and is tuned based on sensor-specific profile.  So it must come
+	  after demosaicing but before any module that changes lightness level, like tone mapping,
+	  exposure or <link linkend="base_curve"><emphasis>base curve</emphasis></link>.
+	</para></listitem>
+	
+	<listitem><para> 
+	  <link linkend="input_color_profile"><emphasis>input color profile</emphasis></link>
+	  further brings the data to some "generic" (linear Lab) representation, independent of
+	  camera details, allowing to apply generic filters with generic parameters (that's
+	  important for shareable, reusable styles).
+	</para></listitem>
+
+      </itemizedlist>
+    </para>
+    
+    <para>
+      The actual order of the modules is not manually chosen by the developers but computed by a
+      script in the source tree named <quote>tools/iop_dependencies.py</quote>, which automatically
+      adjusts the module priority in the source code of each module.  At the time this text is
+      written, the tools in the master branch figures out the order from 200 inter-modules
+      dependencies.
+    </para>
+
+  </sect2>
+
+</sect1>
