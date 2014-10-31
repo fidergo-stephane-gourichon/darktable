@@ -25,8 +25,8 @@
 	</para></listitem>
 	
 	<listitem><para> 
-	  on the left, the snapshots panel shows them with module names, in the order snapshots were
-	  created
+	  on the left, the snapshots panel shows module names, which are, in the order snapshots were
+	  created, names of modules enabled, disabled or adjusted in some way.
 	</para></listitem>
 	
       </itemizedlist>
@@ -55,8 +55,9 @@
       balance</emphasis></link>.  But at any time, the processing took the RAW image (not even
       demosaiced), adjusted <link linkend="whitebalance"><emphasis>white balance</emphasis></link>
       on it, then <link linkend="demosaic"><emphasis>demosaic</emphasis></link>, then <link
-      linkend="base_curve"><emphasis>base curve</emphasis></link> (if enabled), then bilateral
-      filtering (if enabled), as shown bottom to top on the right panel.
+      linkend="base_curve"><emphasis>base curve</emphasis></link> (if enabled), then <link
+      linkend="denoise_bilateral"><emphasis>bilateral filtering</emphasis></link> (if enabled), as
+      shown bottom to top on the right panel.
     </para>
 
   </sect2>
@@ -76,19 +77,17 @@
     </para>
 
     <para>
-      A linear colorspace is necessary for several things as simple as adjusting the exposure, while
-      pre-applied gamma is part of the sRGB standard and implicitly expected of any JPEG that comes
-      without colorspace information.
+      A linear colorspace is necessary for several things as simple as adjusting the <link
+      linkend="exposure"><emphasis>exposure</emphasis></link>, while pre-applied gamma is part of
+      the sRGB standard and in most cases implicitly expected of any JPEG that comes without
+      colorspace information.
     </para>
 
     <para>
-      Some modules can only work on certain representations, and changing format comes with a cost.
-    </para>
-
-    <para>
-      Since quality image processing is computationally expensive, darktable authors had to make
-      some design choice to provide maximum flexibility in processing while minimizing the number of
-      image representation switches to maximize quality.
+      Some modules can only work on certain representations, and changing it comes at a cost (time
+      and quality).  Since quality image processing is computationally expensive, darktable authors
+      had an incentive to provide maximum quality and flexibility in processing while minimizing the
+      number of image representation switches.
     </para>
 
     <para>
@@ -99,20 +98,22 @@
 	  Some modules don't operate on same data, so they couldn't be swapped.
 	</para></listitem>
 	
-	<listitem><para> 
-	  Some orders would make debatable sense, for example apply white balance after non-linear
-	  transformations like <link linkend="base_curve"><emphasis>base curve</emphasis></link> or
-	  <link linkend="tone_curve"> <emphasis>tone curve</emphasis></link>.  Or remove hot pixels
-	  after demosaicing.
+	<listitem><para> Some orders would make debatable sense, for example apply <link
+	linkend="whitebalance"><emphasis>white balance</emphasis></link> after non-linear
+	transformations like <link linkend="base_curve"><emphasis>base curve</emphasis></link> or
+	<link linkend="tone_curve"> <emphasis>tone curve</emphasis></link>.  Or remove <link
+	linkend="hotpixels"><emphasis>hot pixels</emphasis></link> after <link
+	linkend="demosaic"><emphasis>demosaicing</emphasis></link>.  (Indeed those modules are offered
+	in non-raw processing as well but their functionality and relevance is limited.)
 	</para></listitem>
 
       </itemizedlist>
     </para>
     
     <para>
-      The semantic of the data changes along the pipeline. Changing the order would break modules
-      in various way, from downright inapplicable to subtle inaccuracies that people may report as
-      bugs (raw processing assumed below for simplicity):
+      The semantic of the image data changes along the pipeline. Changing the order would break
+      modules in various way, from downright inapplicable to subtle inaccuracies that people may
+      report as bugs (raw processing assumed below for simplicity):
       <itemizedlist>
 	
 	<listitem><para>
@@ -121,11 +122,15 @@
 	</para></listitem>
 	
 	<listitem><para> 
+
 	  An outstanding example of order-dependent processing is <link
 	  linkend="denoise_profiled"><emphasis>profiled denoise</emphasis></link>.  It needs a
-	  three-plane representation and is tuned based on sensor-specific profile.  So it must come
-	  after demosaicing but before any module that changes lightness level, like tone mapping,
-	  exposure or <link linkend="base_curve"><emphasis>base curve</emphasis></link>.
+	  three-plane representation and its operation is bound to a sensor-specific profile.  So it
+	  must come after demosaicing but before any module that changes lightness level, like <link
+	  linkend="tonemapping"><emphasis>tonemapping</emphasis></link>, <link
+	  linkend="exposure"><emphasis>exposure</emphasis></link> or <link
+	  linkend="base_curve"><emphasis>base curve</emphasis></link>.  
+	
 	</para></listitem>
 	
 	<listitem><para> 
@@ -140,10 +145,9 @@
     
     <para>
       The actual order of the modules is not manually chosen by the developers but computed by a
-      script in the source tree named <quote>tools/iop_dependencies.py</quote>, which automatically
+      script in the source tree, named <quote>tools/iop_dependencies.py</quote>, which automatically
       adjusts the module priority in the source code of each module.  At the time this text is
-      written, the tools in the master branch figures out the order from 200 inter-modules
-      dependencies.
+      written, it figures out the order from 200 inter-modules dependencies.
     </para>
 
   </sect2>
